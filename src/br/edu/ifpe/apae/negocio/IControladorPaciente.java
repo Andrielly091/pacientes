@@ -11,7 +11,7 @@ public interface IControladorPaciente {
 
 	Paciente consultar(String cpf);
 
-	void editar(Paciente paciente);
+	void editar(Paciente paciente) throws ExcecaoNegocio;
 
 	Paciente remover(String cpf);
 

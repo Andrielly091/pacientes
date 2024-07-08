@@ -17,7 +17,7 @@ public class GenericDAO<T> implements IGenericDAO<T> {
 	}
 
 	@Override
-	public boolean remover(int id) {
+	public boolean remover(String cpf) {
 		// TODO Auto-generated method stub
 		return false;
 	}

@@ -38,7 +38,8 @@ public class PacienteDAOList implements IPacienteDAO{
 			}
 		}
 	}
-	public void remover(String cpf) {
+	@Override
+	public Paciente remover(String cpf) {
 		for (Iterator<Paciente> iterator = pacientes.iterator(); iterator.hasNext();) {
 			Paciente paciente = iterator.next();
 
@@ -47,19 +48,24 @@ public class PacienteDAOList implements IPacienteDAO{
 
 			}
 		}
+		return null;
 	}
-	public List<Paciente> pacientes_total(){
-		return pacientes;
 
-	}
-	public List<Paciente> consultar(String cpf){
-		List<Paciente> consultandoPacientes = new ArrayList<>();
+	public Paciente consultar(String cpf){
 		for (Paciente paciente : pacientes) {
-			if(paciente.getCpf().equalsIgnoreCase(cpf)) {
-				consultandoPacientes.add(paciente);
+			if(paciente.getCpf() == cpf) {
+				return paciente;
 			}
 		}
-		return consultandoPacientes;
+		return null;
+		
+	}
+
+	
+
+	@Override
+	public List<Paciente> listarTodos() {
+		return pacientes;
 	}
 
 

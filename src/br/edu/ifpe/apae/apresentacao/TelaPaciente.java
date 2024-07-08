@@ -32,24 +32,26 @@ public class TelaPaciente {
 			} catch (ClassCastException ex) {
 				System.out.println("Digite um número válido!");
 			}
+			
+			if (opcao == 1) {
+				this.inserir();
+			}
+			else if(opcao == 2) {
+				this.editar();
+			}
+			else if(opcao == 3) {
+				this.remover();
+			}
+			else if(opcao == 4) {
+				this.consultar();
+			}
+			else if(opcao != 5) {
+				System.out.println("Invalido");
+			}
+
 		} 
 
-		if (opcao == 1) {
-			this.inserir();
-		}
-		else if(opcao == 2) {
-			this.editar();
-		}
-		else if(opcao == 3) {
-			this.remover();
-		}
-		else if(opcao == 4) {
-			this.consultar();
-		}
-		else if(opcao != 5) {
-			System.out.println("Invalido");
-		}
-
+		
 	}
 	private String lerString(String nome) {
 		String valorInicial = "";

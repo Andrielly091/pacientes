@@ -8,7 +8,7 @@ public interface IGenericDAO<T> {
 	
 	public void editar(T objeto);
 	
-	public boolean remover(int id);
+	public boolean remover(String cpf);
 	
 	public List<T> listar(T objeto);
 	
