@@ -24,7 +24,8 @@ public class TelaPaciente {
 			System.out.println("Digite 2 para editar os dados de um paciente;");
 			System.out.println("Digite 3 para remover um paciente;");
 			System.out.println("Digite 4 para consultar um paciente; ou");
-			System.out.println("Digite 5 para sair");
+			System.out.println("Digite 5 para listar todos os pacientes; ou");
+			System.out.println("Digite 6 para sair");
 
 
 			try {
@@ -45,8 +46,13 @@ public class TelaPaciente {
 			else if(opcao == 4) {
 				this.consultar();
 			}
-			else if(opcao != 5) {
-				System.out.println("Invalido");
+			else if(opcao == 5) {
+				this.listarTodos();
+			}
+			
+			else if(opcao != 6) {
+				System.out.println("Inválido");
+				break;
 			}
 
 		} 
