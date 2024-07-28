@@ -9,11 +9,11 @@ public interface IControladorPaciente {
 	
 	void inserir(Paciente paciente) throws ExcecaoNegocio;
 
-	Paciente consultar(String cpf);
+	Paciente consultar(String cpf) throws ExcecaoNegocio;
 
 	void editar(Paciente paciente) throws ExcecaoNegocio;
 
-	void remover(String cpf);
+	void remover(String cpf) throws ExcecaoNegocio;
 
 	List<Paciente> listarTodos();
 
