@@ -2,11 +2,12 @@ package br.edu.ifpe.apae.negocio;
 
 import java.util.List;
 
+
 import br.edu.ifpe.apae.entidades.Paciente;
 import br.edu.ifpe.apae.excecoes.ExcecaoNegocio;
 import br.edu.ifpe.apae.persistencia.FabricaDAO;
-import br.edu.ifpe.apae.persistencia.IPacienteDAO;
-//import br.edu.ifpe.apae.persistencia.IPacienteDAO;
+import br.edu.ifpe.apae.persistencia.GenericDAO;
+import br.edu.ifpe.apae.persistencia.IGenericDAO;
 
 public class ControladorPaciente implements IControladorPaciente{
 	
@@ -20,8 +21,8 @@ public class ControladorPaciente implements IControladorPaciente{
 			throw new ExcecaoNegocio("Paciente cadastrado!");
 		}
 		
-		IPacienteDAO pacienteDAO = FabricaDAO.getPacienteDAO();
-		pacienteDAO.inserir(paciente);
+		GenericDAO<Paciente> pacienteDao = FabricaDAO.getDAO();
+		pacienteDao.inserir(paciente);
 	}
 	
 	@Override
@@ -30,34 +31,38 @@ public class ControladorPaciente implements IControladorPaciente{
 			throw new ExcecaoNegocio("Inválido!");
 		}
 		
-		IPacienteDAO pacienteDAO = FabricaDAO.getPacienteDAO();
-		pacienteDAO.editar(paciente);
+		GenericDAO<Paciente> pacienteDao = FabricaDAO.getDAO();
+		pacienteDao.editar(paciente);
 		
 	}
 
 	@Override
-	public void remover(String cpf) {
-		IPacienteDAO pacienteDAO = FabricaDAO.getPacienteDAO();
+	public void remover(String cpf) throws ExcecaoNegocio {
+		GenericDAO<Paciente> pacienteDAO = FabricaDAO.getDAO();
+		if(!pacienteDAO.remover(cpf)) {
+			throw new ExcecaoNegocio("Paciente não encontrado!");
+		}
 		
 	}
 	
 	@Override
-	public Paciente consultar(String cpf) {
-		IPacienteDAO pacienteDAO = FabricaDAO.getPacienteDAO();
-		return pacienteDAO.consultar(cpf);
+	public Paciente consultar(String cpf) throws ExcecaoNegocio{
+		GenericDAO<Paciente> pacienteDAO = FabricaDAO.getDAO();
+		Paciente paciente = pacienteDAO.consultar(cpf);
+		if(paciente == null) {
+			throw new ExcecaoNegocio("Paciente não encontrado");
+		}
 		
+		return paciente;	
 		
 	}
 
 	@Override
 	public List<Paciente> listarTodos() {
-		IPacienteDAO pacienteDAO = FabricaDAO.getPacienteDAO();	
+		GenericDAO<Paciente> pacienteDAO = FabricaDAO.getDAO();	
 		return pacienteDAO.listarTodos();
 		
-	}
-	
-	
-	
+	}	
 	
 
 }
