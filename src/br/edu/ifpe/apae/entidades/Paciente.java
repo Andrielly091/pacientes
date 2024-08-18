@@ -1,12 +1,13 @@
 package br.edu.ifpe.apae.entidades;
 
+
 public class Paciente extends EntidadeBase {
     private String nome;
     private String nCartaoSUS;
     private String cpf;
 
-    public Paciente(Integer id, String nome, String nCartaoSUS, String cpf) {
-        super(id);
+    public Paciente(String nome, String nCartaoSUS, String cpf) {
+        super();
         this.nome = nome;
         this.nCartaoSUS = nCartaoSUS;
         this.cpf = cpf;
@@ -38,15 +39,16 @@ public class Paciente extends EntidadeBase {
     }
 
     public static class PacienteBuilder {
-        private Integer id;
         private String nome;
         private String nCartaoSUS;
         private String cpf;
-
+		private Integer id;
+        
+        
         public PacienteBuilder id(Integer id) {
-            this.id = id;
-            return this;
-        }
+			this.id = id;
+			return this;
+		}
 
         public PacienteBuilder nome(String nome) {
             this.nome = nome;
@@ -64,7 +66,7 @@ public class Paciente extends EntidadeBase {
         }
 
         public Paciente criar() {
-            return new Paciente(this.id, this.nome, this.nCartaoSUS, this.cpf);
+            return new Paciente(this.nome, this.nCartaoSUS, this.cpf);
         }
     }
 }

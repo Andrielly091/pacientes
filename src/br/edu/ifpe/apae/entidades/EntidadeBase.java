@@ -1,27 +1,26 @@
 package br.edu.ifpe.apae.entidades;
 
 public class EntidadeBase {
-	private static Integer nextID = 1;
-	private Integer id;
-	
-	public EntidadeBase(Integer id) {
+    private static Integer nextID = 1;
+    private Integer id;
 
-		this.id = nextID++;
-	}
+    public EntidadeBase() {
+        this.id = nextID++;
+    }
 
-	public static Integer getNextID() {
-		return nextID;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public static void setNextID(Integer nextID) {
-		EntidadeBase.nextID = nextID;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Integer getId() {
-		return id;
-	}
+    public static Integer getNextID() {
+        return nextID;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public static void setNextID(Integer nextID) {
+        EntidadeBase.nextID = nextID;
+    }
 }

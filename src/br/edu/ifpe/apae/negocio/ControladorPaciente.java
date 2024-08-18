@@ -1,31 +1,27 @@
 package br.edu.ifpe.apae.negocio;
 
-import java.util.ArrayList;
 import java.util.List;
+
 import br.edu.ifpe.apae.entidades.Paciente;
 import br.edu.ifpe.apae.excecoes.ExcecaoNegocio;
 import br.edu.ifpe.apae.persistencia.FabricaDAO;
 import br.edu.ifpe.apae.persistencia.GenericDAO;
 
-public class ControladorPaciente extends ControladorGeneric<Paciente> implements IControladorPaciente{
-	
-	private List<Paciente> pacientes = new ArrayList<>();
-	
-	private boolean verifica(Paciente paciente) {
-		return true;
-	}
+public class ControladorPaciente extends ControladorGeneric<Paciente> implements IControladorPaciente {
+
+    private GenericDAO<Paciente> pacienteDAO = FabricaDAO.getDAO();
 
     @Override
     public void inserir(Paciente paciente) throws ExcecaoNegocio {
         if (consultarPorCPF(paciente.getCpf()) != null) {
             throw new ExcecaoNegocio("Paciente com CPF já cadastrado.");
         }
-        pacientes.add(paciente);
+        pacienteDAO.inserir(paciente);
     }
 
     @Override
     public Paciente consultarPorCPF(String cpf) throws ExcecaoNegocio {
-        for (Paciente paciente : pacientes) {
+        for (Paciente paciente : pacienteDAO.listarTodos()) {
             if (paciente.getCpf().equals(cpf)) {
                 return paciente;
             }
@@ -33,43 +29,35 @@ public class ControladorPaciente extends ControladorGeneric<Paciente> implements
         return null;
     }
 
-	
-	@Override
-	public void editar(Paciente paciente) throws ExcecaoNegocio {
-		if (!this.verifica(paciente)) {
-			throw new ExcecaoNegocio("Inválido!");
-		}
-		
-		GenericDAO<Paciente> pacienteDao = FabricaDAO.getDAO();
-		pacienteDao.editar(paciente);
-		
-	}
-	
-	@Override
-	public Paciente consultar(Paciente paciente) throws ExcecaoNegocio{
-		GenericDAO<Paciente> pacienteDAO = FabricaDAO.getDAO();
-		Paciente paciente1 = pacienteDAO.consultar(paciente);
-		if(paciente == null) {
-			throw new ExcecaoNegocio("Paciente não encontrado");
-		}
-		
-		return paciente;	
-		
-	}
+    @Override
+    public void editar(Paciente paciente) throws ExcecaoNegocio {
+        if (pacienteDAO.consultarPorId(paciente.getId()) == null) {
+            throw new ExcecaoNegocio("Paciente não encontrado.");
+        }
+        pacienteDAO.editar(paciente);
+    }
 
-	@Override
-	public List<Paciente> listarTodos() {
-		GenericDAO<Paciente> pacienteDAO = FabricaDAO.getDAO();	
-		return pacienteDAO.listarTodos();
-		
-	}
+    @Override
+    public Paciente consultarPorId(Integer id) throws ExcecaoNegocio {
+        Paciente paciente = pacienteDAO.consultarPorId(id);
+        if (paciente == null) {
+            throw new ExcecaoNegocio("Paciente não encontrado.");
+        }
+        return paciente;
+    }
 
-	@Override
-	public void remover(String cpf) throws ExcecaoNegocio {
-		GenericDAO<Paciente> pacienteDAO = FabricaDAO.getDAO();
-		pacienteDAO.remover(cpf);
-		
-		
-	}
-	
+    @Override
+    public List<Paciente> listarTodos() {
+        return pacienteDAO.listarTodos();
+    }
+
+    @Override
+    public void remover(String cpf) throws ExcecaoNegocio {
+        Paciente paciente = consultarPorCPF(cpf);
+        if (paciente != null) {
+            pacienteDAO.remover(paciente.getId());
+        } else {
+            throw new ExcecaoNegocio("Paciente com CPF não encontrado.");
+        }
+    }
 }
