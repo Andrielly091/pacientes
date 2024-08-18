@@ -17,20 +17,20 @@ public class Fachada {
 		controladorPaciente.inserir(paciente);
 	}
 
-	Paciente consultar(Integer id) throws ExcecaoNegocio{
-		return controladorPaciente.consultar(id);
-	}
-
 	void editar(Paciente paciente) throws ExcecaoNegocio{
 		controladorPaciente.editar(paciente);
 	}
 
-	void remover(Integer id) throws ExcecaoNegocio{
-		controladorPaciente.remover(id);
+	void remover(String cpf) throws ExcecaoNegocio{
+		controladorPaciente.remover(cpf);
 	}
 
 	List<Paciente> listarTodos(){
 		return controladorPaciente.listarTodos();
+	}
+	
+	Paciente consultarPorCPF(String cpf) throws ExcecaoNegocio {
+		return controladorPaciente.consultarPorCPF(cpf);
 	}
 
 }
