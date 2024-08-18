@@ -1,80 +1,70 @@
 package br.edu.ifpe.apae.entidades;
 
-public class Paciente {
+public class Paciente extends EntidadeBase {
+    private String nome;
+    private String nCartaoSUS;
+    private String cpf;
 
-	private String nome;
-	private String N_cartao_SUS;
-	private String cpf;
+    public Paciente(Integer id, String nome, String nCartaoSUS, String cpf) {
+        super(id);
+        this.nome = nome;
+        this.nCartaoSUS = nCartaoSUS;
+        this.cpf = cpf;
+    }
 
-	public Paciente() {}
+    // Getters e Setters
+    public String getNome() {
+        return nome;
+    }
 
-	public Paciente(String nome, String n_cartao_SUS, String cpf) {
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 
-		this.nome = nome;
-		N_cartao_SUS = n_cartao_SUS;
-		this.cpf = cpf;
-	}
+    public String getnCartaoSUS() {
+        return nCartaoSUS;
+    }
 
-	public String getNome() {
-		return nome;
-	}
+    public void setnCartaoSUS(String nCartaoSUS) {
+        this.nCartaoSUS = nCartaoSUS;
+    }
 
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
+    public String getCpf() {
+        return cpf;
+    }
 
-	public String getN_cartao_SUS() {
-		return N_cartao_SUS;
-	}
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
 
-	public void setN_cartao_SUS(String n_cartao_SUS) {
-		N_cartao_SUS = n_cartao_SUS;
-	}
+    public static class PacienteBuilder {
+        private Integer id;
+        private String nome;
+        private String nCartaoSUS;
+        private String cpf;
 
-	public String getCpf() {
-		return cpf;
-	}
+        public PacienteBuilder id(Integer id) {
+            this.id = id;
+            return this;
+        }
 
-	public void setCpf(String cpf) {
-		this.cpf = cpf;
-	}
-	
-	public static class PacienteBuilder{
-		private String nome;
-		private String N_cartao_SUS;
-		private String cpf;
-		
-		public PacienteBuilder nome (String nome) {
-			this.nome = nome;
-			
-			return this;
-			
-		}
-		public PacienteBuilder N_cartao_SUS (String N_cartao_SUS) {
-			this.N_cartao_SUS = N_cartao_SUS;
-			
-			return this;
-			
-		}
-		public PacienteBuilder cpf (String cpf) {
-			this.cpf = cpf;
-			
-			return this;
-			
-		}
-		public Paciente criar() {
-			return new Paciente(this.nome, this.N_cartao_SUS, this.cpf);
-			
-		}
-		
-		
-		
-		
-		
-		
-	}
-	
-	
+        public PacienteBuilder nome(String nome) {
+            this.nome = nome;
+            return this;
+        }
 
+        public PacienteBuilder nCartaoSUS(String nCartaoSUS) {
+            this.nCartaoSUS = nCartaoSUS;
+            return this;
+        }
 
+        public PacienteBuilder cpf(String cpf) {
+            this.cpf = cpf;
+            return this;
+        }
+
+        public Paciente criar() {
+            return new Paciente(this.id, this.nome, this.nCartaoSUS, this.cpf);
+        }
+    }
 }
