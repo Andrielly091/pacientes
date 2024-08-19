@@ -5,6 +5,8 @@ public class Paciente extends EntidadeBase {
     private String nome;
     private String nCartaoSUS;
     private String cpf;
+    
+    public Paciente() {}
 
     public Paciente(String nome, String nCartaoSUS, String cpf) {
         super();

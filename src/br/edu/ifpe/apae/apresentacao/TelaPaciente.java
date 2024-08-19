@@ -14,256 +14,269 @@ import br.edu.ifpe.apae.entidades.Policlinica;
 import br.edu.ifpe.apae.excecoes.ExcecaoNegocio;
 import br.edu.ifpe.apae.log.MeuLog;
 import br.edu.ifpe.apae.negocio.FabricaControlador;
+import br.edu.ifpe.apae.negocio.Fachada;
 import br.edu.ifpe.apae.negocio.IControladorPaciente;
 import br.edu.ifpe.apae.util.AdapterCPF;
 import br.edu.ifpe.apae.util.ValidaCPF;
 
 public class TelaPaciente {
 
-    private final Scanner scanner = new Scanner(System.in);
-    private AdapterCPF validaCPF;
-    private IControladorPaciente controlador;
+	private Fachada fachada;
+	private final Scanner scanner = new Scanner(System.in);
+	private AdapterCPF validaCPF;
+	private IControladorPaciente controlador;
 
-    public TelaPaciente() {
-        this.validaCPF = new ValidaCPF();
-        this.controlador = FabricaControlador.getControladorPaciente();
-    }
+	public TelaPaciente() {
+		this.validaCPF = new ValidaCPF();
+		this.controlador = FabricaControlador.getControladorPaciente();
+		this.fachada = new Fachada();
 
-    public void exibir() throws ExcecaoNegocio, IOException {
-        int opcao;
-        do {
-            mostrarMenuPrincipal();
-            opcao = lerInteiro("Escolha uma opção");
+	}
 
-            switch (opcao) {
-                case 1:
-                    cadastrarPaciente();
-                    break;
-                case 2:
-                    editarPaciente();
-                    break;
-                case 3:
-                    removerPaciente();
-                    break;
-                case 4:
-                    consultarPaciente();
-                    break;
-                case 5:
-                    listarTodosPacientes();
-                    break;
-                case 6:
-                    System.out.println("Volte sempre");
-                    MeuLog.registrarPacientes("Paciente encerrou sessão");
-                    break;
-                default:
-                    System.out.println("Opção inválida! Digite um número entre 1 e 6.");
-                    break;
-            }
-        } while (opcao != 6);
-    }
+	public void exibir() throws ExcecaoNegocio, IOException {
+		String opcao;
+		do {
+			mostrarMenuPrincipal();
+			opcao = lerString("Escolha uma opção");
 
-    private void mostrarMenuPrincipal() {
-        System.out.println("Bem-vindo(a)!");
-        System.out.println("Digite 1 para cadastrar um paciente;");
-        System.out.println("Digite 2 para editar os dados de um paciente;");
-        System.out.println("Digite 3 para remover um paciente;");
-        System.out.println("Digite 4 para consultar um paciente;");
-        System.out.println("Digite 5 para consultar todos os pacientes;");
-        System.out.println("Digite 6 para sair");
-        System.out.println("-------------------------------------------");
-    }
+			switch (opcao) {
+			case "1":
+				cadastrarPaciente();
+				break;
+			case "2":
+				editarPaciente();
+				break;
+			case "3":
+				removerPaciente();
+				break;
+			case "4":
+				consultarPaciente();
+				break;
+			case "5":
+				listarTodosPacientes();
+				break;
+			case "6":
+				System.out.println("Volte sempre");
+				MeuLog.registrarPacientes("Paciente encerrou sessão");
+				break;
+			default:
+				System.out.println("Opção inválida! Digite um número entre 1 e 6.");
+				break;
+			}
+		} while (opcao != "6");
+	}
 
-    private void cadastrarPaciente() {
-        System.out.println("Cadastro de Pacientes");
+	private void mostrarMenuPrincipal() {
+		System.out.println("Bem-vindo(a)!");
+		System.out.println("Digite 1 para cadastrar um paciente;");
+		System.out.println("Digite 2 para editar os dados de um paciente;");
+		System.out.println("Digite 3 para remover um paciente;");
+		System.out.println("Digite 4 para consultar um paciente;");
+		System.out.println("Digite 5 para consultar todos os pacientes;");
+		System.out.println("Digite 6 para sair");
+		System.out.println("-------------------------------------------");
+	}
 
-        while (true) {
-            String cpf = lerString("CPF do paciente");
+	private void cadastrarPaciente() {
+		System.out.println("Cadastro de Pacientes");
 
-            if (!validaCPF.valida(cpf)) {
-                System.out.println("CPF inválido! Tente novamente.");
-                continue;
-            }
+		while (true) {
+			String cpf = lerString("CPF do paciente");
 
-            try {
-                if (controlador.consultarPorCPF(cpf) != null) {
-                    System.out.println("CPF já cadastrado! Tente novamente.");
-                    continue;
-                }
+			if (!validaCPF.valida(cpf)) {
+				System.out.println("CPF inválido! Tente novamente.");
+				continue;
+			}
 
-                String nCartaoSUS = lerString("N° cartão do SUS");
-                if (!validaCartaoSUS(nCartaoSUS)) {
-                    System.out.println("Número do cartão do SUS inválido! Tente novamente.");
-                    continue;
-                }
+			try {
+				if (fachada.consultarPorCPF(cpf) != null) {
+					System.out.println("CPF já cadastrado! Tente novamente.");
+					continue;
+				}
 
-                String nome = lerString("Nome");
-                Paciente paciente = new Paciente.PacienteBuilder()
-                        .cpf(cpf)
-                        .nCartaoSUS(nCartaoSUS)
-                        .nome(nome)
-                        .criar();
+				String nCartaoSUS = lerString("N° cartão do SUS");
+				if (!validaCartaoSUS(nCartaoSUS)) {
+					System.out.println("Número do cartão do SUS inválido! Tente novamente.");
+					continue;
+				}
 
-                controlador.inserir(paciente);
-                System.out.println("Paciente cadastrado com sucesso!");
-                exibirFichaPaciente(paciente);
+				String nome = lerString("Nome");
+				Paciente paciente = new Paciente.PacienteBuilder()
+						.cpf(cpf)
+						.nCartaoSUS(nCartaoSUS)
+						.nome(nome)
+						.criar();
 
-                // Seleção de especialidade e cálculo do valor da consulta
-                selecionarEspecialidade();
+				fachada.inserir(paciente);
+				System.out.println("Paciente cadastrado com sucesso!");
+				MeuLog.registrarPacientes("\nPaciente cadastrado com sucesso!");
+				exibirFichaPaciente(paciente);
 
-            } catch (ExcecaoNegocio e) {
-                System.out.println("Erro ao cadastrar paciente: " + e.getMessage());
-            } catch (Exception e) {
-                System.out.println("Erro inesperado: " + e.getMessage());
-            }
+				selecionarEspecialidade();
 
-            if (!perguntarSeDesejaCadastrarOutro()) {
-                break;
-            }
-        }
-    }
+			} catch (ExcecaoNegocio e) {
+				System.out.println("Erro ao cadastrar paciente: " + e.getMessage());
+			} catch (Exception e) {
+				System.out.println("Erro inesperado: " + e.getMessage());
+			}
 
-    private void exibirFichaPaciente(Paciente paciente) {
-        System.out.println("\n--- Ficha do Paciente ---");
-        System.out.println("ID: " + paciente.getId());
-        System.out.println("CPF: " + paciente.getCpf());
-        System.out.println("Cartão do SUS: " + paciente.getnCartaoSUS());
-        System.out.println("Nome: " + paciente.getNome());
-        System.out.println("--------------------------");
-    }
+			if (!perguntarSeDesejaCadastrarOutro()) {
+				break;
+			}
+		}
+	}
 
-    private void selecionarEspecialidade() {
-        System.out.println("1 - Cardiologista");
-        System.out.println("2 - Fisioterapeuta");
-        System.out.println("3 - Oftalmologista");
-        System.out.println("4 - Sair");
+	private void exibirFichaPaciente(Paciente paciente) {
+		System.out.println("\n--- Ficha do Paciente ---");
+		System.out.println("ID: " + paciente.getId());
+		System.out.println("CPF: " + paciente.getCpf());
+		System.out.println("Cartão do SUS: " + paciente.getnCartaoSUS());
+		System.out.println("Nome: " + paciente.getNome());
+		System.out.println("--------------------------");
+	}
 
-        int opcao = lerInteiro("Escolha a especialidade");
+	private void selecionarEspecialidade() {
+		System.out.println("1 - Cardiologista");
+		System.out.println("2 - Fisioterapeuta");
+		System.out.println("3 - Oftalmologista");
+		System.out.println("4 - Sair");
 
-        Policlinica valorConsulta = new Consultas();
-        String especialidade = "";
-        double valorTotal = 0.0;
+		int opcao = lerInteiro("Escolha a especialidade");
 
-        switch (opcao) {
-            case 1:
-                valorConsulta = new Cardiologista(valorConsulta);
-                especialidade = "Cardiologista";
-                break;
-            case 2:
-                valorConsulta = new Fisioterapeuta(valorConsulta);
-                especialidade = "Fisioterapeuta";
-                break;
-            case 3:
-                valorConsulta = new Oftalmologista(valorConsulta);
-                especialidade = "Oftalmologista";
-                break;
-            case 4:
-                System.out.println("Saindo...");
-                return;
-            default:
-                System.out.println("Opção inválida! Tente novamente.");
-                return;
-        }
+		Policlinica valorConsulta = new Consultas();
+		String especialidade = "";
+		double valorTotal = 0.0;
 
-        valorTotal = valorConsulta.getPagamento();
-        System.out.println("Total da consulta: R$ " + valorTotal);
-    }
+		switch (opcao) {
+		case 1:
+			valorConsulta = new Cardiologista(valorConsulta);
+			especialidade = "Cardiologista";
+			break;
+		case 2:
+			valorConsulta = new Fisioterapeuta(valorConsulta);
+			especialidade = "Fisioterapeuta";
+			break;
+		case 3:
+			valorConsulta = new Oftalmologista(valorConsulta);
+			especialidade = "Oftalmologista";
+			break;
+		case 4:
+			System.out.println("Saindo...");
+			return;
+		default:
+			System.out.println("Opção inválida! Tente novamente.");
+			return;
+		}
 
-    private boolean validaCartaoSUS(String nCartaoSUS) {
-        String regex = "^[0-9]{1,15}(\\.[0-9]{1,15})?$";
-        return Pattern.matches(regex, nCartaoSUS);
-    }
+		valorTotal = valorConsulta.getPagamento();
+		System.out.println("Total da consulta: R$ " + valorTotal);
+	}
 
-    private void editarPaciente() {
-        System.out.println("Editar Paciente");
+	private boolean validaCartaoSUS(String nCartaoSUS) {
+		String regex = "^[0-9]{1,15}(\\.[0-9]{1,15})?$";
+		return Pattern.matches(regex, nCartaoSUS);
+	}
 
-        Integer id = lerInteiro("ID do paciente");
+	private void editarPaciente() {
+		System.out.println("Editar Paciente");
 
-        try {
-            Paciente pacienteExistente = controlador.consultarPorCPF(null); // Consulta paciente pelo ID (ou CPF)
-            if (pacienteExistente == null) {
-                System.out.println("Paciente não encontrado com o ID: " + id);
-                return;
-            }
+		String cpf = lerString("CPF do paciente");
 
-            String novaNCartaoSUS = lerString("Novo N° cartão do SUS");
-            String novoNome = lerString("Novo nome");
+		try {
+			Paciente pacienteExistente = fachada.consultarPorCPF(cpf); 
+			if (pacienteExistente == null) {
+				System.out.println("Paciente não encontrado com o CPF: " + cpf);
+				return;
+			}
 
-            Paciente paciente = new Paciente(novoNome, novaNCartaoSUS, pacienteExistente.getCpf());
-            controlador.editar(paciente);
-            System.out.println("Paciente editado com sucesso!");
+			String novaNCartaoSUS = lerString("Novo N° cartão do SUS");
+			String novoNome = lerString("Novo nome");
 
-        } catch (ExcecaoNegocio e) {
-            System.out.println("Erro ao editar paciente com o ID " + id + ": " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Erro inesperado ao editar paciente com o ID " + id + ": " + e.getMessage());
-        }
-    }
+			Paciente pacienteAtualizado = new Paciente.PacienteBuilder()
+					.cpf(cpf) 
+					.nCartaoSUS(novaNCartaoSUS)
+					.nome(novoNome)
+					.criar();
 
-    private void removerPaciente() {
-        System.out.println("Remover Paciente");
+			fachada.editar(pacienteExistente);
 
-        String cpf = lerString("CPF do paciente");
+			System.out.println("Paciente editado com sucesso!");
+			MeuLog.registrarPacientes(novaNCartaoSUS);
+			MeuLog.registrarPacientes(novoNome);
 
-        try {
-            controlador.remover(cpf);
-            System.out.println("Paciente removido com sucesso!");
-        } catch (ExcecaoNegocio e) {
-            System.out.println("Erro ao remover paciente: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Erro inesperado ao remover paciente: " + e.getMessage());
-        }
-    }
+		} catch (ExcecaoNegocio e) {
+			System.out.println("Erro ao editar paciente com o CPF " + cpf + ": " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println("Erro inesperado ao editar paciente com o CPF " + cpf + ": " + e.getMessage());
+		}
+	}
 
-    private void consultarPaciente() {
-        System.out.println("Consultar Paciente");
 
-        String cpf = lerString("CPF do paciente");
+	private void removerPaciente() {
+		System.out.println("Remover Paciente");
 
-        try {
-            Paciente paciente = controlador.consultarPorCPF(cpf);
-            if (paciente != null) {
-                System.out.println("Paciente encontrado:");
-                exibirFichaPaciente(paciente);
-            } else {
-                System.out.println("Paciente não encontrado.");
-            }
-        } catch (ExcecaoNegocio e) {
-            System.out.println("Erro ao consultar paciente: " + e.getMessage());
-        } catch (Exception e) {
-            System.out.println("Erro inesperado ao consultar paciente: " + e.getMessage());
-        }
-    }
+		String cpf = lerString("CPF do paciente");
 
-    private void listarTodosPacientes() {
-        System.out.println("Lista de Todos os Pacientes");
+		try {
+			fachada.remover(cpf);
+			System.out.println("Paciente removido com sucesso!");
+		} catch (ExcecaoNegocio e) {
+			System.out.println("Erro ao remover paciente: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println("Erro inesperado ao remover paciente: " + e.getMessage());
+		}
+	}
 
-        try {
-            List<Paciente> pacientes = controlador.listarTodos();
-            if (!pacientes.isEmpty()) {
-                System.out.println("Lista de Pacientes:");
-                for (Paciente paciente : pacientes) {
-                    exibirFichaPaciente(paciente);
-                }
-            } else {
-                System.out.println("Nenhum paciente encontrado.");
-            }
-        } catch (Exception e) {
-            System.out.println("Erro inesperado ao listar pacientes: " + e.getMessage());
-        }
-    }
+	private void consultarPaciente() {
+		System.out.println("Consultar Paciente");
 
-    private String lerString(String prompt) {
-        System.out.print(prompt + ": ");
-        return scanner.nextLine();
-    }
+		String cpf = lerString("CPF do paciente");
 
-    private Integer lerInteiro(String prompt) {
-        System.out.print(prompt + ": ");
-        return Integer.parseInt(scanner.nextLine());
-    }
+		try {
+			Paciente paciente = fachada.consultarPorCPF(cpf);
+			if (paciente != null) {
+				System.out.println("Paciente encontrado:");
+				exibirFichaPaciente(paciente);
+			} else {
+				System.out.println("Paciente não encontrado.");
+			}
+		} catch (ExcecaoNegocio e) {
+			System.out.println("Erro ao consultar paciente: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println("Erro inesperado ao consultar paciente: " + e.getMessage());
+		}
+	}
 
-    private boolean perguntarSeDesejaCadastrarOutro() {
-        System.out.print("Deseja cadastrar outro paciente? (S/N): ");
-        return scanner.nextLine().trim().equalsIgnoreCase("S");
-    }
+	private void listarTodosPacientes() {
+		System.out.println("Lista de Todos os Pacientes");
+
+		try {
+			List<Paciente> pacientes = fachada.listarTodos();
+			if (!pacientes.isEmpty()) {
+				System.out.println("Lista de Pacientes:");
+				for (Paciente paciente : pacientes) {
+					exibirFichaPaciente(paciente);
+				}
+			} else {
+				System.out.println("Nenhum paciente encontrado.");
+			}
+		} catch (Exception e) {
+			System.out.println("Erro inesperado ao listar pacientes: " + e.getMessage());
+		}
+	}
+
+	private String lerString(String prompt) {
+		System.out.print(prompt + ": ");
+		return scanner.nextLine();
+	}
+
+	private Integer lerInteiro(String prompt) {
+		System.out.print(prompt + ": ");
+		return Integer.parseInt(scanner.nextLine());
+	}
+
+	private boolean perguntarSeDesejaCadastrarOutro() {
+		System.out.print("Deseja cadastrar outro paciente? (S/N) ");
+		return scanner.nextLine().trim().equalsIgnoreCase("S");
+	}
 }

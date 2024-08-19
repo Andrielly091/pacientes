@@ -7,29 +7,29 @@ import br.edu.ifpe.apae.excecoes.ExcecaoNegocio;
 
 public class Fachada {
 	
-	ControladorPaciente controladorPaciente;
+	private IControladorPaciente controladorPaciente;
 	
 	public Fachada() {
-		this.controladorPaciente = new ControladorPaciente();
+		controladorPaciente = FabricaControlador.getControladorPaciente();
 	}
 	
-	void inserir(Paciente paciente) throws ExcecaoNegocio{
+	public void inserir(Paciente paciente) throws ExcecaoNegocio{
 		controladorPaciente.inserir(paciente);
 	}
 
-	void editar(Paciente paciente) throws ExcecaoNegocio{
+	public void editar(Paciente paciente) throws ExcecaoNegocio{
 		controladorPaciente.editar(paciente);
 	}
 
-	void remover(String cpf) throws ExcecaoNegocio{
+	public void remover(String cpf) throws ExcecaoNegocio{
 		controladorPaciente.remover(cpf);
 	}
 
-	List<Paciente> listarTodos(){
+	public List<Paciente> listarTodos(){
 		return controladorPaciente.listarTodos();
 	}
 	
-	Paciente consultarPorCPF(String cpf) throws ExcecaoNegocio {
+	public Paciente consultarPorCPF(String cpf) throws ExcecaoNegocio {
 		return controladorPaciente.consultarPorCPF(cpf);
 	}
 
