@@ -6,33 +6,30 @@ import br.edu.ifpe.apae.persistencia.FabricaDAO;
 import br.edu.ifpe.apae.persistencia.IGenericDAO;
 
 public abstract class ControladorGeneric<T> {
-    private IGenericDAO<T> genericDAO;
+	private IGenericDAO<T> genericDAO;
 
-    public ControladorGeneric() {
-        this.genericDAO = FabricaDAO.getDAO();
-    }
+	public ControladorGeneric() {
+		this.genericDAO = FabricaDAO.getDAO();
+	}
 
-    public List<T> listarTodos() throws ExcecaoNegocio {
-        return genericDAO.listarTodos();
-    }
+	public T consultarPorId(Integer id) throws ExcecaoNegocio {
+		T entidade = genericDAO.consultarPorId(id);
+		if (entidade == null) {
+			throw new ExcecaoNegocio("Entidade não encontrada!");
+		}
+		return entidade;
+	}
 
-    public T consultarPorId(Integer id) throws ExcecaoNegocio {
-        return genericDAO.consultarPorId(id);
-    }
+	public void editar(T objeto) throws ExcecaoNegocio {
+		genericDAO.editar(objeto);
+	}
 
-    public void inserir(T objeto) throws ExcecaoNegocio {
-        genericDAO.inserir(objeto);
-    }
+	public List<T> consultarTodos() throws ExcecaoNegocio {
+		return genericDAO.listarTodos();
+	}
 
-    public void editar(T objeto) throws ExcecaoNegocio {
-        genericDAO.editar(objeto);
-    }
 
-    public void remover(Integer id) throws ExcecaoNegocio {
-        genericDAO.remover(id);
-    }
-
-    protected IGenericDAO<T> getDao() {
-        return genericDAO;
-    }
+	protected IGenericDAO<T> getDao() {
+		return genericDAO;
+	}
 }

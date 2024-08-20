@@ -132,46 +132,66 @@ public class TelaPaciente {
 		System.out.println("CPF: " + paciente.getCpf());
 		System.out.println("Cartão do SUS: " + paciente.getnCartaoSUS());
 		System.out.println("Nome: " + paciente.getNome());
-		System.out.println("--------------------------");
+		System.out.println("-------------------------------------------------------");
 	}
 
 	private void selecionarEspecialidade() {
-		System.out.println("1 - Cardiologista");
-		System.out.println("2 - Fisioterapeuta");
-		System.out.println("3 - Oftalmologista");
-		System.out.println("4 - Sair");
-
-		int opcao = lerInteiro("Escolha a especialidade");
-
-		Policlinica valorConsulta = new Consultas();
-		String especialidade = "";
+		Scanner scanner = new Scanner(System.in);
+		boolean continuar = true;
 		double valorTotal = 0.0;
 
-		switch (opcao) {
-		case 1:
-			valorConsulta = new Cardiologista(valorConsulta);
-			especialidade = "Cardiologista";
-			break;
-		case 2:
-			valorConsulta = new Fisioterapeuta(valorConsulta);
-			especialidade = "Fisioterapeuta";
-			break;
-		case 3:
-			valorConsulta = new Oftalmologista(valorConsulta);
-			especialidade = "Oftalmologista";
-			break;
-		case 4:
-			System.out.println("Saindo...");
-			return;
-		default:
-			System.out.println("Opção inválida! Tente novamente.");
-			return;
+		while (continuar) {
+			System.out.println("1 - Cardiologista");
+			System.out.println("2 - Fisioterapeuta");
+			System.out.println("3 - Oftalmologista");
+			System.out.println("4 - Sair");
+			String opcao = lerString(scanner, "Escolha especialidade");
+
+			Policlinica valorConsulta = new Consultas();
+			String especialidade = "";
+			double valorConsultaAtual = 0.0;
+
+			switch (opcao) {
+			case "1":
+				valorConsulta = new Cardiologista(valorConsulta);
+				especialidade = "Cardiologista";
+				break;
+			case "2":
+				valorConsulta = new Fisioterapeuta(valorConsulta);
+				especialidade = "Fisioterapeuta";
+				break;
+			case "3":
+				valorConsulta = new Oftalmologista(valorConsulta);
+				especialidade = "Oftalmologista";
+				break;
+			case "4":
+				continuar = false;
+				System.out.println("Saindo...");
+				break;
+			default:
+				System.out.println("Opção inválida! Tente novamente.");
+				continue;
+			}
+
+			if (continuar) {
+				valorConsultaAtual = valorConsulta.getPagamento();
+				int quantidadeConsultas = lerInt(scanner, "Quantas consultas deseja realizar com o(a) " + especialidade + "?");
+				valorTotal += valorConsultaAtual * quantidadeConsultas;
+
+				System.out.println("Você escolheu: " + especialidade);
+				System.out.println("Valor da consulta (" + especialidade + "): R$ " + valorConsultaAtual);
+				System.out.println("Valor total para " + quantidadeConsultas + " consulta(s): R$ " + (valorConsultaAtual * quantidadeConsultas));
+
+				String sairOuContinuar = lerString(scanner, "Deseja sair? (Digite 'sim' para sair ou pressione Enter para continuar)");
+				if (sairOuContinuar.equalsIgnoreCase("sim")) {
+					continuar = false;
+					System.out.println("Saindo...");
+				}
+			}
 		}
 
-		valorTotal = valorConsulta.getPagamento();
-		System.out.println("Total da consulta: R$ " + valorTotal);
+		System.out.println("Valor total de todas as consultas: R$ " + valorTotal);
 	}
-
 	private boolean validaCartaoSUS(String nCartaoSUS) {
 		String regex = "^[0-9]{1,15}(\\.[0-9]{1,15})?$";
 		return Pattern.matches(regex, nCartaoSUS);
@@ -270,9 +290,23 @@ public class TelaPaciente {
 		return scanner.nextLine();
 	}
 
+	private String lerString(Scanner scanner, String mensagem) {
+		System.out.print(mensagem + ": ");
+		return scanner.nextLine();
+	}
+
 	private Integer lerInteiro(String prompt) {
 		System.out.print(prompt + ": ");
 		return Integer.parseInt(scanner.nextLine());
+	}
+
+	private int lerInt(Scanner scanner, String mensagem) {
+		System.out.print(mensagem + ": ");
+		while (!scanner.hasNextInt()) {
+			System.out.println("Entrada inválida. Por favor, insira um número inteiro.");
+			scanner.next(); // Limpar a entrada inválida
+		}
+		return scanner.nextInt();
 	}
 
 	private boolean perguntarSeDesejaCadastrarOutro() {
