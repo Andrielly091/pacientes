@@ -34,38 +34,36 @@ public class TelaPaciente {
 	}
 
 	public void exibir() throws ExcecaoNegocio, IOException {
-		String opcao;
-		do {
-			mostrarMenuPrincipal();
-			opcao = lerString("Escolha uma opção");
+	    String opcao;
+	    do {
+	        mostrarMenuPrincipal();
+	        opcao = lerString("Escolha uma opção");
 
-			switch (opcao) {
-			case "1":
-				cadastrarPaciente();
-				break;
-			case "2":
-				editarPaciente();
-				break;
-			case "3":
-				removerPaciente();
-				break;
-			case "4":
-				consultarPaciente();
-				break;
-			case "5":
-				listarTodosPacientes();
-				break;
-			case "6":
-				System.out.println("Volte sempre");
-				MeuLog.registrarPacientes("Paciente encerrou sessão");
-				break;
-			default:
-				System.out.println("Opção inválida! Digite um número entre 1 e 6.");
-				break;
-			}
-		} while (opcao != "6");
+	        switch (opcao) {
+	            case "1":
+	                cadastrarPaciente();
+	                break;
+	            case "2":
+	                editarPaciente();
+	                break;
+	            case "3":
+	                removerPaciente();
+	                break;
+	            case "4":
+	                consultarPaciente();
+	                break;
+	            case "5":
+	                listarTodosPacientes();
+	                break;
+	            case "6":
+	                System.out.println("Volte sempre");
+	                break;
+	            default:
+	                System.out.println("Opção inválida! Digite um número entre 1 e 6.");
+	                break;
+	        }
+	    } while (!opcao.equals("6"));
 	}
-
 	private void mostrarMenuPrincipal() {
 		System.out.println("Bem-vindo(a)!");
 		System.out.println("Digite 1 para cadastrar um paciente;");
